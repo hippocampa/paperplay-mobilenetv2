@@ -1,0 +1,54 @@
+# Data directories
+data/*
+datasets/*
+results/*
+
+# Model checkpoints and outputs
+*.pt
+*.pth
+*.checkpoint
+predictions/*
+
+# Generated files
+*.log
+*.csv
+*.txt
+*.html
+*.pdf
+
+# IDE and virtual environment files
+.idea/*
+.vscode/*
+env/*
+venv/*
+
+# Temporary files
+*.pyc
+*.egg-info
+__pycache__
+
+# Build artifacts
+build/*
+dist/*
+
+# Third-party libraries cache
+node_modules/
+.cache/
+
+# Testing files
+*.ipynb
+.pytest_cache/
+
+# Local secrets
+.env
+.secrets
+
+# Specific to your project
+# Add any additional files or directories you want to ignore
+
+# Ignore all files starting with a dot (excluding .gitignore itself)
+.*
+!*.gitignore
+
+# Ignore all files ending with a tilde
+*~

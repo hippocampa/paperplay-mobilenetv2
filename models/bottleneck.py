@@ -19,7 +19,8 @@ class BottleneckBlock(nn.Module):
     """
 
     def __init__(self, in_c: int, out_c: int,
-                 nstrides: int, exp_factor: int) -> None:
+                 exp_factor:int,
+                 nstrides: int=1) -> None:
         super().__init__()
         expanded_ch = in_c*exp_factor
         self.nstrides = nstrides
@@ -27,17 +28,26 @@ class BottleneckBlock(nn.Module):
         self.blayers = nn.Sequential(
             nn.Conv2d(in_channels=in_c,
                       out_channels=expanded_ch,
-                      stride=self.nstrides, kernel_size=1),
-            nn.ReLU6(),
+                      stride=self.nstrides, kernel_size=1, bias=False),
+            nn.BatchNorm2d(in_c * exp_factor),
+            nn.ReLU6(inplace=True),
             DSC(inchannels=expanded_ch,
                 outchannels=expanded_ch),
             nn.Conv2d(in_channels=expanded_ch,
                       out_channels=out_c, kernel_size=1),
         )
+        self.use_skip_connection = self.nstrides == 1 and in_c == out_c
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """
+        Calculate the forward pass of the network.
+
+        Args:
+            x (torch.Tensor): Input tensor
+        Returns:
+            torch.Tensor: Output tensor
+        """
         out = self.blayers(x)
-        if self.nstrides == 1:
-            return torch.add(x, out)  # skip connection
-        else:
-            return out
+        if self.use_skip_connection:
+            out+=x
+        return out

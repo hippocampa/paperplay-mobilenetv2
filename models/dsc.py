@@ -26,7 +26,7 @@ class DepthwiseSeparableConvolution(nn.Module):
                             out_channels=inchannels,
                             groups=inchannels,
                             kernel_size=3,
-                            stride=nstride, padding=1)
+                            stride=nstride, padding=1, bias=False)
 
         self.PC = nn.Conv2d(in_channels=inchannels,
                             out_channels=outchannels, kernel_size=1)
@@ -38,7 +38,7 @@ class DepthwiseSeparableConvolution(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         out = self.DC(x)
         out = self.BN1(out)
+        out = self.RELU(out)
         out = self.PC(out)
         out = self.BN2(out)
-        out = self.RELU(out)
         return out
